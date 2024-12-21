@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️❤️Gửi cậu iu Nguyễn Yến Nhi ❤️❤️</title>
+    <style>
+ body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to right, #ff7eb3, #ff758c);
+    overflow: hidden;
+}
+
+#snowCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Không ảnh hưởng tới thao tác của người dùng */
+    z-index: -1; /* Hiển thị phía sau các nội dung khác */
+}
+
+.container {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.message {
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+button {
+    background: #ff4d88;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin: 5px;
+}
+
+button:hover {
+    background: #ff1a66;
+}
+
+.response {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+    .message, .response {
+        font-size: 1rem;
+    }
+    button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+.card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: #8ec5e6;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.card h1 {
+    font-size: 2rem;
+    color: #ff4d88;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+
+    </style>
+</head>
+<body>
+
+  <canvas id="snowCanvas"></canvas>
+  <div class="container">
+    <div class="card">
+      <h1>❤️ Lời mời đặc biệt ❤️</h1>
+      <p>Ngày mai cậu có rảnh không? Nếu có, hãy đi chơi cùng tớ có đc hông 😃<strong>Cậu IU</strong>! ❤️</p>
+      <div class="buttons">
+        <button id="acceptBtn" onclick="handleResponse(true)">Đồng ý</button>
+        <button id="rejectBtn" onclick="handleResponse(false)">Từ chối</button>
+    </div>
+    <div id="responseMessage" class="response" style="color: rgb(116, 142, 164);"></div>
+  </div>
+      
+  </div>
+
+  <script>
+    // Xử lý hiệu ứng tuyết rơi
+const snowCanvas = document.getElementById('snowCanvas');
+const ctx = snowCanvas.getContext('2d');
+
+// Đặt kích thước canvas
+snowCanvas.width = window.innerWidth;
+snowCanvas.height = window.innerHeight;
+
+// Danh sách các bông tuyết
+const snowflakes = [];
+
+// Hàm tạo bông tuyết mới
+function createSnowflake() {
+    const size = Math.random() * 5 + 2;
+    snowflakes.push({
+        x: Math.random() * snowCanvas.width,
+        y: -size,
+        size: size,
+        speed: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.5
+    });
+}
+
+// Vẽ bông tuyết
+function drawSnowflake(snowflake) {
+    ctx.beginPath();
+    ctx.arc(snowflake.x, snowflake.y, snowflake.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${snowflake.opacity})`;
+    ctx.fill();
+}
+
+// Cập nhật và vẽ tuyết
+function animateSnow() {
+    ctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+
+    snowflakes.forEach((snowflake, index) => {
+        snowflake.y += snowflake.speed;
+        if (snowflake.y > snowCanvas.height) {
+            snowflakes.splice(index, 1);
+        } else {
+            drawSnowflake(snowflake);
+        }
+    });
+
+    if (snowflakes.length < 100) createSnowflake();
+    requestAnimationFrame(animateSnow);
+}
+
+// Bắt đầu hiệu ứng tuyết rơi
+animateSnow();
+
+// Xử lý phản hồi của người dùng
+function handleResponse(accepted) {
+    const responseMessage = document.getElementById('responseMessage');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+
+    // Lưu trạng thái vào LocalStorage
+    localStorage.setItem('userResponse', accepted ? 'accepted' : 'rejected');
+
+    if (accepted) {
+        responseMessage.textContent = "Tuyệt vời! Hẹn gặp cậu vào ngày mai, nhớ đừng quên nhé! Nhắn cho tớ nha, tớ không dùng API nên không biết cậu chọn gì, hihihi!";
+    } else {
+        responseMessage.textContent = "Ồ, thế lúc nào rảnh nhắn tớ nha 😍";
+    }
+
+    acceptBtn.style.display = 'none';
+    rejectBtn.style.display = 'none';
+    responseMessage.style.display = 'block';
+}
+
+// Kiểm tra trạng thái khi tải lại trang
+function checkResponse() {
+    const userResponse = localStorage.getItem('userResponse');
+    const responseMessage = document.getElementById('responseMessage');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+
+    if (userResponse === 'accepted') {
+        responseMessage.textContent = "Tuyệt vời! Hẹn gặp cậu vào ngày mai, nhớ đừng quên nhé! Nhắn cho tớ nha, tớ không dùng API nên không biết cậu chọn gì, hihihi!";
+        responseMessage.style.display = 'block';
+        acceptBtn.style.display = 'none';
+        rejectBtn.style.display = 'none';
+    } else if (userResponse === 'rejected') {
+        responseMessage.textContent = "Ồ, thế lúc nào rảnh nhắn tớ nha 😍";
+        responseMessage.style.display = 'block';
+        acceptBtn.style.display = 'none';
+        rejectBtn.style.display = 'none';
+    }
+}
+
+// Kiểm tra trạng thái khi tải trang
+window.onload = checkResponse;
+
+  </script>
+</body>
+</html>
